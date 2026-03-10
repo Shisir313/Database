@@ -71,3 +71,65 @@ SELECT
 FROM Department2 d
 LEFT JOIN Employee2 e ON d.DNo = e.DNO
 GROUP BY d.Dname;
+
+select Fname, LName
+from employee2 e
+where exists(
+	select 1
+    from employee2 e
+    where e.DNo=3
+    and E.ssn=e.ssn
+);
+
+SELECT 
+    d.Dname,
+    COUNT(e.SSN) AS NumberOfEmployees
+FROM Department2 d
+JOIN Employee2 e 
+    ON d.DNo = e.DNO
+GROUP BY d.Dname
+HAVING COUNT(e.SSN) >= 2;
+
+ALTER TABLE Employee2
+ADD DateOfBirth DATE;
+
+UPDATE Employee2 
+SET DateOfBirth = '1990-05-12'
+WHERE SSN = 101001001;
+
+UPDATE Employee2 
+SET DateOfBirth = '1988-03-20'
+WHERE SSN = 102002002;
+
+UPDATE Employee2 
+SET DateOfBirth = '1990-11-08'
+WHERE SSN = 103003003;
+
+UPDATE Employee2 
+SET DateOfBirth = '1995-07-15'
+WHERE SSN = 104004004;
+
+UPDATE Employee2 
+SET DateOfBirth = '1992-09-25'
+WHERE SSN = 105005005;
+
+SELECT FName, LName
+FROM Employee2
+WHERE DateOfBirth BETWEEN '1990-01-01' AND '1990-12-31';
+
+SELECT 
+    e.FName,
+    e.LName,
+    d.Dname
+FROM Employee2 e
+JOIN Department2 d
+    ON e.DNO = d.DNo;
+    
+
+
+
+
+
+
+
+

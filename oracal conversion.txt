@@ -1,0 +1,92 @@
+-- Create Employee2 Table
+CREATE TABLE Employee2 (
+    FName VARCHAR2(100),
+    LName VARCHAR2(100),
+    SSN NUMBER PRIMARY KEY,
+    Address VARCHAR2(100),
+    Sex VARCHAR2(20),
+    Salary NUMBER(10,2),
+    SuperSSN NUMBER,
+    DNO NUMBER
+);
+
+-- Insert sample employees
+INSERT INTO Employee2 (FName, LName, SSN, Address, Sex, Salary, SuperSSN, DNO)
+VALUES ('Alice', 'Johnson', 101001001, '12 Elm St, CityX', 'F', 70000, NULL, 1);
+
+INSERT INTO Employee2 VALUES ('Bob','Williams',102002002,'34 Oak St, CityY','M',65000,101001001,2);
+INSERT INTO Employee2 VALUES ('Carol','Taylor',103003003,'56 Pine St, CityZ','F',60000,101001001,1);
+INSERT INTO Employee2 VALUES ('David','Lee',104004004,'78 Maple St, CityX','M',58000,102002002,3);
+INSERT INTO Employee2 VALUES ('Eva','Martinez',105005005,'90 Cedar St, CityY','F',62000,102002002,2);
+
+-- Create Department2 Table
+CREATE TABLE Department2 (
+    DNo NUMBER PRIMARY KEY,
+    Dname VARCHAR2(50) NOT NULL,
+    ManagerStartDate DATE,
+    ManagerSSN VARCHAR2(100)
+);
+
+-- Insert departments
+INSERT INTO Department2 VALUES 
+(1, 'HR', TO_DATE('2020-01-15','YYYY-MM-DD'), '101001001');
+
+INSERT INTO Department2 VALUES 
+(2, 'IT', TO_DATE('2019-06-01','YYYY-MM-DD'), '102002002');
+
+INSERT INTO Department2 VALUES 
+(3, 'Finance', TO_DATE('2021-03-10','YYYY-MM-DD'), '105005005');
+
+INSERT INTO Department2 VALUES 
+(4, 'Marketing', TO_DATE('2022-07-20','YYYY-MM-DD'), '103003003');
+
+INSERT INTO Department2 VALUES 
+(5, 'Operations', TO_DATE('2018-11-05','YYYY-MM-DD'), '104004004');
+
+-- Alter table to add column
+ALTER TABLE Employee2
+ADD MInit VARCHAR2(5);
+
+-- Add Foreign Key
+ALTER TABLE Employee2
+ADD CONSTRAINT FK_Employee_Department
+FOREIGN KEY (DNO) REFERENCES Department2(DNo);
+
+-- Insert new department
+INSERT INTO Department2
+VALUES (6, 'Research', TO_DATE('2023-01-01','YYYY-MM-DD'), '101001001');
+
+-- Update department for some employees
+UPDATE Employee2
+SET DNO = 6
+WHERE SSN IN (101001001, 103003003);
+
+-- Increase salary by 10%
+UPDATE Employee2
+SET Salary = Salary * 1.10
+WHERE DNO = 6;
+
+-- Select employees in department 6
+SELECT FName, LName, Salary
+FROM Employee2
+WHERE DNO = 6;
+
+-- Aggregate salary info for department 1
+SELECT 
+    SUM(Salary) AS TotalSalary,
+    MAX(Salary) AS MaxSalary,
+    MIN(Salary) AS MinSalary,
+    AVG(Salary) AS AvgSalary
+FROM Employee2
+WHERE DNO = 1;
+
+-- Salary statistics by department
+SELECT 
+    d.Dname,
+    SUM(e.Salary) AS TotalSalary,
+    MAX(e.Salary) AS MaxSalary,
+    MIN(e.Salary) AS MinSalary,
+    AVG(e.Salary) AS AvgSalary
+FROM Department2 d
+LEFT JOIN Employee2 e ON d.DNo = e.DNO
+GROUP BY d.Dname;
